@@ -1,0 +1,50 @@
+CREATE DATABASE empresa;
+USE empresa;
+
+CREATE TABLE cargos (
+    id_cargo INT AUTO_INCREMENT PRIMARY KEY,
+    nome_cargo VARCHAR(40) NOT NULL
+);
+
+CREATE TABLE gestores (
+    id_gestor INT AUTO_INCREMENT PRIMARY KEY,
+    nome_gestor VARCHAR(40) NOT NULL
+);
+
+CREATE TABLE empregados (
+    id_emp INT AUTO_INCREMENT PRIMARY KEY,
+    nome_emp VARCHAR(40),
+    cidade_emp VARCHAR(100),
+    idade_emp INT,
+    id_cargo INT,
+    id_gestor INT,
+    CONSTRAINT fk_cargos_empregados FOREIGN KEY (id_cargo) REFERENCES cargos(id_cargo),
+    CONSTRAINT fk_gestores_empregado FOREIGN KEY (id_gestor) REFERENCES gestores(id_gestor)
+);
+
+/*inserindo dados nas tabelas*/
+
+INSERT INTO Cargos (nome_cargo) VALUES('Auxiliar Administrativo'),('Assistente de Produto'), ('Analista de Sistemas'),('Coordenador de Equipe');
+
+INSERT INTO gestores (nome_gestor)
+VALUES ('Anderson Figueiredo'),('Roberto Antunes'),('Israel Nascimento'),('Junior Santos');
+
+INSERT INTO empregados (nome_emp, cidade_emp, idade_emp, id_cargo, id_gestor)
+VALUES ('Leonardo Vieira','Porto Alegre',25,2,3);
+
+INSERT INTO empregados (nome_emp, cidade_emp, idade_emp, id_cargo, id_gestor)
+VALUES ('Antonio Nunes','Floripa',28,1,2),('Israel Fernandes','Goiânia',30,2,2);
+
+INSERT INTO empregados (nome_emp, cidade_emp, idade_emp, id_cargo, id_gestor)
+VALUES('Francisco Vieira','Itapema',22,3,4);
+
+INSERT INTO empregados (nome_emp, cidade_emp, idade_emp, id_cargo, id_gestor)
+VALUES('Fernando Santos','Joinville',25,2,3);
+
+/*caso você queira atualizar o nome de algum registro*/
+UPDATE cargos
+SET nome_cargo = 'Analista de Suporte'
+WHERE id_cargo = 4;
+
+/*conferir se a alteração foi realizada*/
+SELECT * FROM cargos;
