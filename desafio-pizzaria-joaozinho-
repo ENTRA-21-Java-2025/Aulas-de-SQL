@@ -1,0 +1,10 @@
+Implementar o banco de dados pizzaria:
+
+Add coluna valor na tabela pedidos
+Inserir valores na coluna  valor da tabela pedidos
+Add coluna data do pedido na tabela pedidos
+Inserir datas aleatórias na coluna data do pedido na tabela pedidos
+Add mais 3 status na tabela status
+Inserir status na coluna nomeStatus na tabela status
+Add coluna tamanho na tabela pizza
+Inserir 3 tamanhos na coluna tamanho na tabela pizza
