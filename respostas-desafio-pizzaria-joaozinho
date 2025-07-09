@@ -1,0 +1,77 @@
+1.Adicionar a coluna valor na tabela pedidos
+ALTER TABLE pedidos
+ADD COLUMN valor DECIMAL;
+
+2.Inserir valores na coluna valor da tabela pedidos
+UPDATE pedidos SET valor = 45.90 WHERE idPedido = 1;
+UPDATE pedidos SET valor = 38.50 WHERE idPedido = 2;
+UPDATE pedidos SET valor = 49.00 WHERE idPedido = 3;
+UPDATE pedidos SET valor = 41.75 WHERE idPedido = 4;
+
+3.Adicionar a coluna data_pedido na tabela pedidos
+ALTER TABLE pedidos
+ADD COLUMN data_pedido DATE;
+
+4.Inserir datas aleatórias na coluna data_pedido
+UPDATE pedidos SET data_pedido = '2024-07-01' WHERE idPedido = 1;
+UPDATE pedidos SET data_pedido = '2024-07-03' WHERE idPedido = 2;
+UPDATE pedidos SET data_pedido = '2024-07-06' WHERE idPedido = 3;
+UPDATE pedidos SET data_pedido = '2024-07-08' WHERE idPedido = 4;
+
+5.Adicionar mais 3 status na tabela status
+INSERT INTO status (nomeStatus)
+VALUES ('Cancelado'),('Aguardando pagamento'),('Rejeitado');
+
+6.Adicionar a coluna tamanho na tabela pizzas
+ALTER TABLE pizzas
+ADD COLUMN tamanho VARCHAR(20);
+
+7.Inserir 3 tamanhos na coluna tamanho da tabela pizzas
+UPDATE pizzas SET tamanho = 'Média' WHERE idPizzas = 1;
+UPDATE pizzas SET tamanho = 'Grande' WHERE idPizzas = 2;
+UPDATE pizzas SET tamanho = 'Pequena' WHERE idPizzas = 3;
+UPDATE pizzas SET tamanho = 'Média' WHERE idPizzas = 4;
+
+/*ADICIONAIS*/
+
+1. Exibindo a data no formato DD-MM-YYYY
+SELECT 
+  pedidos.idPedido, 
+  massas.nomeMassa, 
+  sabores.nomeSabores, 
+  status.nomeStatus,
+  DATE_FORMAT(pedidos.data_pedido, '%d-%m-%Y') AS data_formatada
+FROM pedidos
+INNER JOIN pizzas 
+  ON pizzas.idPizzas = pedidos.idPizzas
+INNER JOIN sabores
+  ON pizzas.idSabores = sabores.idSabores
+INNER JOIN massas
+  ON pizzas.idMassa = massas.idMassa
+INNER JOIN status
+  ON pedidos.idStatus = status.idStatus;
+
+2. Exibir quantos pedidos estão com o status "Em produção"
+SELECT COUNT(*) AS total_em_producao
+FROM pedidos
+INNER JOIN status ON pedidos.idStatus = status.idStatus
+WHERE status.nomeStatus = 'Em produção';
+
+3. Exibir quantidade de pedidos por status
+SELECT status.nomeStatus, COUNT(*) AS total
+FROM pedidos
+INNER JOIN status ON pedidos.idStatus = status.idStatus
+GROUP BY status.nomeStatus;
+
+4. Exibir qual o maior valor de pedido
+SELECT MAX(valor) AS maior_valor
+FROM pedidos;
+
+5. Formatando em reais
+SELECT 
+  pedidos.idPedido,
+  CONCAT('R$ ', REPLACE(FORMAT(pedidos.valor, 2), '.', ',')) AS valor_formatado,
+  DATE_FORMAT(pedidos.data_pedido, '%d/%m/%Y') AS data_pedido,
+  status.nomeStatus
+FROM pedidos
+INNER JOIN status ON pedidos.idStatus = status.idStatus;
