@@ -1,0 +1,8 @@
+Criar as seguintes consultas e suas respectivas views:
+
+1. Como consultar todos os alunos de uma turma?
+2. Como consultar todas as notas de um aluno para uma matéria?
+3. Como consultar a grade de aulas da semana de uma turma?
+4. Como saber quais dias e horários um professor vai dar aula na semana para uma turma?
+5. Como saber qual a média de notas de todos os alunos de uma matéria específica?
+6. Como saber qual aluno tirou a nota mais alta no ano em uma matéria específica?
