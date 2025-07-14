@@ -1,0 +1,8 @@
+Crie as seguintes procedures:
+
+1. Cadastrar um novo aluno em uma turma
+2. Gera boletim completo de um aluno ( com todas as matérias )
+3. Lançar uma nota para um aluno
+4. Listar todos os professores de uma matéria
+5. Consultar a grade de aulas de uma turma por dia
+6. Verificar a média final de um aluno em todas as matérias
