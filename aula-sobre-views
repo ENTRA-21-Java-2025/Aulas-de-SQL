@@ -1,0 +1,81 @@
+1. Consultar todos os alunos de uma turma
+CREATE VIEW vw_estudantes_turmas AS
+SELECT 
+    e.id AS aluno_id,
+    CONCAT(e.nome, ' ', e.sobrenome) AS nome_aluno,
+    t.titulo AS turma
+FROM estudantes e
+JOIN turmas t ON e.turma_id = t.id
+WHERE t.titulo = 'Turma A';
+
+
+2. Consultar todas as notas de um aluno para uma matéria
+CREATE VIEW vw_notasAlunoMateria AS
+SELECT 
+    CONCAT(e.nome, ' ', e.sobrenome) AS aluno,
+    m.titulo AS materia,
+    b.trimestre,
+    b.nota
+FROM boletins b
+JOIN estudantes e ON b.aluno_id = e.id
+JOIN materias m ON b.materia_id = m.id
+WHERE e.id = 5 AND m.titulo = 'Matemática';
+
+
+3. Consultar a grade de aulas da semana de uma turma
+CREATE VIEW vw_aulas_por_turma AS
+SELECT 
+    t.titulo AS turma,
+    g.dia_semana,
+    m.titulo AS materia,
+    a.hora_inicio,
+    a.hora_fim
+FROM grade g
+JOIN turmas t ON g.turma_id = t.id
+JOIN grade_aula ga ON ga.grade_id = g.id
+JOIN aula a ON a.id = ga.aula_id
+JOIN materias m ON a.materia_id = m.id
+WHERE t.titulo = 'Turma A';
+
+4. Quais dias e horários um professor dá aula na semana para uma turma
+CREATE VIEW vw_professor_por_turma AS
+SELECT 
+    CONCAT(p.nome, ' ', p.sobrenome) AS professor,
+    t.titulo AS turma,
+    g.dia_semana,
+    m.titulo AS materia,
+    a.hora_inicio,
+    a.hora_fim
+FROM professores p
+JOIN materias m ON p.materia_id = m.id
+JOIN aula a ON a.materia_id = m.id
+JOIN grade_aula ga ON ga.aula_id = a.id
+JOIN grade g ON g.id = ga.grade_id
+JOIN turmas t ON g.turma_id = t.id
+WHERE p.id = 2 AND t.titulo = 'Turma A'
+ORDER BY g.dia_semana, a.hora_inicio;
+
+
+5. Média de notas de todos os alunos de uma matéria específica
+CREATE VIEW vw_media_nota_alunos AS
+SELECT 
+    m.titulo AS materia,
+    ROUND(AVG(b.nota), 2) AS media_geral
+FROM boletins b
+JOIN materias m ON b.materia_id = m.id
+WHERE m.titulo = 'Matemática'
+GROUP BY m.id;
+
+
+6. Aluno com a maior nota do ano em uma matéria específica
+CREATE VIEW vw_maior_nota_ano AS
+SELECT 
+    CONCAT(e.nome, ' ', e.sobrenome) AS aluno,
+    m.titulo AS materia,
+    MAX(b.nota) AS nota_maxima
+FROM boletins b
+JOIN estudantes e ON b.aluno_id = e.id
+JOIN materias m ON b.materia_id = m.id
+WHERE m.titulo = 'História'
+GROUP BY m.id
+LIMIT 1;
