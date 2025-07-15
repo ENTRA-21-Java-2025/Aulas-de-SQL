@@ -1,0 +1,73 @@
+1. Relatório de Estudantes com Suas Turmas
+SELECT 
+    e.id AS aluno_id,
+    CONCAT(e.nome, ' ', e.sobrenome) AS aluno,
+    e.data_nascimento,
+    e.telefone,
+    t.titulo AS turma,
+    t.periodo
+FROM estudantes e
+JOIN turmas t ON e.turma_id = t.id
+ORDER BY t.titulo, aluno;
+
+2. Relatório de Professores e Matérias que Lecionam
+SELECT 
+    p.id AS professor_id,
+    CONCAT(p.nome, ' ', p.sobrenome) AS professor,
+    m.titulo AS materia
+FROM professores p
+JOIN materias m ON p.materia_id = m.id
+ORDER BY professor;
+
+3. Notas dos Alunos por Matéria e Trimestre
+SELECT 
+    CONCAT(est.nome, ' ', est.sobrenome) AS aluno,
+    m.titulo AS materia,
+    b.trimestre,
+    b.nota
+FROM boletins b
+JOIN estudantes est ON b.aluno_id = est.id
+JOIN materias m ON b.materia_id = m.id
+ORDER BY aluno, materia, trimestre;
+
+4. Média de Notas por Matéria
+SELECT 
+    m.titulo AS materia,
+    ROUND(AVG(b.nota), 2) AS media_geral
+FROM boletins b
+JOIN materias m ON b.materia_id = m.id
+GROUP BY m.id, m.titulo
+ORDER BY media_geral DESC;
+
+5. Top 5 Alunos com Melhor Desempenho Geral
+SELECT 
+    CONCAT(e.nome, ' ', e.sobrenome) AS aluno,
+    ROUND(AVG(b.nota), 2) AS media
+FROM boletins b
+JOIN estudantes e ON b.aluno_id = e.id
+GROUP BY b.aluno_id
+ORDER BY media DESC
+LIMIT 5;
+
+6. Grade Horária de Cada Turma por Dia da Semana
+SELECT 
+    t.titulo AS turma,
+    g.dia_semana,
+    m.titulo AS materia,
+    a.hora_inicio,
+    a.hora_fim
+FROM grade g
+JOIN turmas t ON g.turma_id = t.id
+JOIN grade_aula ga ON ga.grade_id = g.id
+JOIN aula a ON a.id = ga.aula_id
+JOIN materias m ON a.materia_id = m.id
+ORDER BY t.titulo, g.dia_semana, a.hora_inicio;
+
+7. Quantidade de Alunos por Turma
+SELECT 
+    t.titulo AS turma,
+    COUNT(e.id) AS total_alunos
+FROM turmas t
+LEFT JOIN estudantes e ON e.turma_id = t.id
+GROUP BY t.id, t.titulo
+ORDER BY total_alunos DESC;
