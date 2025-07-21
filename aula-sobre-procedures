@@ -1,0 +1,149 @@
+1. Cadastrar um novo aluno em uma turma
+Cadastra um aluno e já associa à turma correta com seus dados.
+
+CREATE PROCEDURE sp_cadastrar_aluno(
+	in p_nome VARCHAR(100),
+	in p_sobrenome varchar(100),
+	in p_telefone varchar(20),
+	in p_data_nascimento date,
+	in p_turma_id int
+)
+BEGIN
+	insert into estudantes (nome, sobrenome, telefone, data_nascimento, turma_id)
+	values (p_nome, p_sobrenome, p_telefone, p_data_nascimento, p_turma_id);
+END
+
+* Para rodar: 
+
+CALL sp_cadastrar_aluno(
+	'Lucas', 'Silveira', '11987991422', '1991-03-15', '1'
+);
+
+select * from estudantes
+where nome = 'Lucas'
+
+
+
+2. Gerar boletim completo de um aluno (com todas as matérias e trimestres)
+Retorna o boletim completo do aluno informado.
+
+CREATE PROCEDURE sp_boletim_aluno (
+    IN p_aluno_id INT
+)
+BEGIN
+    SELECT 
+        CONCAT(e.nome, ' ', e.sobrenome) AS aluno,
+        m.titulo AS materia,
+        b.trimestre,
+        b.nota
+    FROM boletins b
+    JOIN estudantes e ON e.id = b.aluno_id
+    JOIN materias m ON m.id = b.materia_id
+    WHERE e.id = p_aluno_id
+    ORDER BY materia, trimestre;
+END
+
+* Para rodar: 
+
+CALL sp_boletim_aluno(5);
+
+
+3. Lançar uma nota para um aluno
+Registra ou atualiza a nota de um aluno para um trimestre em uma matéria.
+
+CREATE PROCEDURE sp_lancar_nota (
+    IN p_aluno_id INT,
+    IN p_materia_id INT,
+    IN p_trimestre INT,
+    IN p_nota INT
+)
+BEGIN
+    DECLARE existe INT;
+
+    SELECT COUNT(*) INTO existe
+    FROM boletins
+    WHERE aluno_id = p_aluno_id AND materia_id = p_materia_id AND trimestre = p_trimestre;
+
+    IF existe > 0 THEN
+        UPDATE boletins
+        SET nota = p_nota
+        WHERE aluno_id = p_aluno_id AND materia_id = p_materia_id AND trimestre = p_trimestre;
+    ELSE
+        INSERT INTO boletins (aluno_id, materia_id, trimestre, nota)
+        VALUES (p_aluno_id, p_materia_id, p_trimestre, p_nota);
+    END IF;
+END
+
+* Para rodar:
+
+CALL sp_lancar_nota(5, 2, 3, 85);
+
+
+
+4. Listar todos os professores de uma matéria
+Mostra todos os professores que lecionam uma matéria específica.
+
+CREATE PROCEDURE sp_professores_por_materia (
+    IN p_materia_id INT
+)
+BEGIN
+    SELECT 
+        CONCAT(p.nome, ' ', p.sobrenome) AS professor,
+        m.titulo AS materia
+    FROM professores p
+    JOIN materias m ON p.materia_id = m.id
+    WHERE m.id = p_materia_id;
+END
+
+* Para rodar:
+
+CALL sp_professores_por_materia(3);
+
+
+5. Consultar a grade de aulas de uma turma por dia
+Retorna a grade de horários de uma turma em um dia da semana.
+
+CREATE PROCEDURE sp_grade_turma_dia (
+    IN p_turma_id INT,
+    IN p_dia VARCHAR(10)
+)
+BEGIN
+    SELECT 
+        t.titulo AS turma,
+        g.dia_semana,
+        m.titulo AS materia,
+        a.hora_inicio,
+        a.hora_fim
+    FROM grade g
+    JOIN turmas t ON g.turma_id = t.id
+    JOIN grade_aula ga ON ga.grade_id = g.id
+    JOIN aula a ON a.id = ga.aula_id
+    JOIN materias m ON a.materia_id = m.id
+    WHERE t.id = p_turma_id AND g.dia_semana = p_dia
+    ORDER BY a.hora_inicio;
+END
+
+* Para rodar:
+
+CALL sp_grade_turma_dia(1, 'SEG');
+
+
+6. Verificar a média final de um aluno em todas as matérias
+Mostra a média de cada matéria cursada por um aluno.
+
+CREATE PROCEDURE sp_media_final_aluno (
+    IN p_aluno_id INT
+)
+BEGIN
+    SELECT 
+        m.titulo AS materia,
+        ROUND(AVG(b.nota), 2) AS media_final
+    FROM boletins b
+    JOIN materias m ON b.materia_id = m.id
+    WHERE b.aluno_id = p_aluno_id
+    GROUP BY b.materia_id;
+END
+
+* Para rodar:
+
+CALL sp_media_final_aluno(5);
