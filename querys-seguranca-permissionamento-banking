@@ -1,0 +1,13 @@
+use banking
+
+create user 'gerente_jose'@'localhost' identified by 'senha123'
+
+grant select, update on banking.cliente to 'gerente_jose'@'localhost'
+
+show grants for 'gerente_jose'@'localhost'
+
+select * from cliente
+
+update cliente set nomeCompleto = 'Rosa Amorim Vieira' where idCliente = 6
+
+revoke update on banking.cliente from 'gerente_jose'@'localhost'
